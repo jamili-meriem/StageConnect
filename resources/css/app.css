@@ -1,0 +1,35 @@
+/* ✅ Import unique v4 — remplace tout ce qui était en haut */
+@import "tailwindcss";
+
+@layer base {
+    body {
+        font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    }
+}
+
+@layer utilities {
+    .btn-primary {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+    .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+    }
+    .nav-blur {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+    .gradient-text {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+}
