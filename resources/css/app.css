@@ -1,9 +1,35 @@
-/* ✅ Import unique v4 — remplace tout ce qui était en haut */
 @import "tailwindcss";
 
 @layer base {
+    :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --bg-card: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --border-color: #e2e8f0;
+        --nav-bg: rgba(255, 255, 255, 0.97);
+    }
+
+    [data-theme="dark"] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #263348;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --nav-bg: rgba(15, 23, 42, 0.97);
+    }
+
     body {
         font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    * {
+        transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 }
 
@@ -22,14 +48,18 @@
         box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
     }
     .nav-blur {
-        background: rgba(255, 255, 255, 0.97);
+        background: var(--nav-bg);
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        border-bottom: 1px solid var(--border-color);
     }
     .gradient-text {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+    }
+    .dark-card {
+        background-color: var(--bg-card);
+        border-color: var(--border-color);
     }
 }
