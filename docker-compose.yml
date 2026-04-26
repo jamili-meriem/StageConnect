@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stageconnect_app
+    restart: unless-stopped
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=stageconnect
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - stageconnect_network
+
+  db:
+    image: mysql:8.0
+    container_name: stageconnect_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: stageconnect
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - stageconnect_network
+
+volumes:
+  db_data:
+
+networks:
+  stageconnect_network:
+    driver: bridge

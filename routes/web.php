@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfilController;
+
+
 
 // ========== ROUTE PUBLIQUE ==========
 
@@ -37,7 +42,14 @@ Route::middleware(['auth', 'role:etudiant'])
     Route::get('/recommandations', function() {
     return view('etudiant.recommandations');
 })->name('recommandations');
+Route::post('/favoris/{offre}/toggle', [EtudiantController::class, 'toggleFavori'])
+     ->name('favoris.toggle');
 
+Route::get('/favoris', [EtudiantController::class, 'favoris'])
+     ->name('favoris');
+
+Route::get('/profil', [ProfilController::class, 'showEtudiant'])->name('profil');
+Route::put('/profil', [ProfilController::class, 'updateEtudiant'])->name('profil.update');
 });
 
 // ========== ROUTES ENTREPRISE ==========
@@ -73,7 +85,17 @@ Route::middleware(['auth', 'role:entreprise'])
 
     Route::patch('/candidatures/{candidature}/statut', [EntrepriseController::class, 'updateStatut'])
          ->name('candidatures.statut');
+         Route::get('/candidatures/{candidature}/evaluer', [EvaluationController::class, 'create'])
+     ->name('candidatures.evaluer');
+Route::post('/candidatures/{candidature}/evaluer', [EvaluationController::class, 'store'])
+     ->name('candidatures.evaluer.store');
+     Route::get('/profil', [ProfilController::class, 'showEntreprise'])->name('profil');
+Route::put('/profil', [ProfilController::class, 'updateEntreprise'])->name('profil.update');
 
+Route::get('/candidatures/{candidature}/evaluer', [EvaluationController::class, 'create'])
+     ->name('candidatures.evaluer');
+Route::post('/candidatures/{candidature}/evaluer', [EvaluationController::class, 'store'])
+     ->name('candidatures.evaluer.store');
 });
 // ========== ROUTES IA ==========
 Route::middleware(['auth'])->prefix('ia')->name('ia.')->group(function () {
@@ -122,5 +144,23 @@ Route::get('/dashboard', function () {
     }
 
 })->middleware('auth')->name('dashboard');
+use App\Http\Controllers\NotificationController;
 
+// Profil entreprise
+Route::middleware(['auth', 'role:entreprise'])->group(function () {
+    Route::get('/entreprise/profil', [ProfilController::class, 'showEntreprise'])
+         ->name('entreprise.profil');
+    Route::put('/entreprise/profil', [ProfilController::class, 'updateEntreprise'])
+         ->name('entreprise.profil.update');
+});
+
+// Notifications (tous les rôles connectés)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])
+         ->name('notifications.index');
+    Route::post('/notifications/{notification}/lire', [NotificationController::class, 'lire'])
+         ->name('notifications.lire');
+    Route::post('/notifications/lire-tout', [NotificationController::class, 'lireTout'])
+         ->name('notifications.lireTout');
+});
 require __DIR__.'/auth.php';

@@ -6,6 +6,7 @@ use App\Models\Offre;
 use App\Models\Candidature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\NotificationHelper;
 
 class EtudiantController extends Controller
 {
@@ -42,34 +43,39 @@ class EtudiantController extends Controller
     // Liste des offres disponibles
     // Appelé quand on visite GET /etudiant/offres
     public function offres(Request $request)
-    {
-        // $request->search : récupère le paramètre ?search= dans l'URL
-        $search = $request->search;
+{
+    $search      = $request->search;
+    $domaine     = $request->domaine;
+    $typeTravail = $request->type_travail;
 
-        $offres = Offre::active() // scope défini dans le modèle Offre
-                       ->with('entreprise') // charge l'entreprise liée
-                       ->when($search, function ($query) use ($search) {
-                           // when() : applique le filtre seulement si $search n'est pas vide
-                           // like '%mot%' : cherche le mot n'importe où dans le texte
-                           $query->where('titre', 'like', "%{$search}%")
-                                 ->orWhere('domaine', 'like', "%{$search}%")
-                                 ->orWhere('lieu', 'like', "%{$search}%");
-                       })
-                       ->latest()
-                       ->paginate(9); // affiche 9 offres par page
+    $offres = Offre::active()
+                   ->with('entreprise')
+                   ->when($search, function ($query) use ($search) {
+                       $query->where('titre', 'like', "%{$search}%")
+                             ->orWhere('domaine', 'like', "%{$search}%")
+                             ->orWhere('lieu', 'like', "%{$search}%");
+                   })
+                   ->when($domaine, function ($query) use ($domaine) {
+                       $query->where('domaine', $domaine);
+                   })
+                   ->when($typeTravail, function ($query) use ($typeTravail) {
+                       $query->where('type_travail', $typeTravail);
+                   })
+                   ->latest()
+                   ->paginate(9);
 
-        return view('etudiant.offres', compact('offres', 'search'));
-    }
+    return view('etudiant.offres', compact('offres', 'search'));
+}
 
     // Détail d'une offre
     // {offre} dans la route → Laravel récupère l'offre automatiquement
-    public function showOffre(Offre $offre)
-    {
-        // load() : charge la relation entreprise sur cet objet
-        $offre->load('entreprise');
-
-        return view('etudiant.offre-detail', compact('offre'));
-    }
+   public function showOffre(Offre $offre)
+{
+    $offre->load('entreprise');
+    // Incrémente le compteur de vues à chaque visite
+    $offre->incrementerVues();
+    return view('etudiant.offre-detail', compact('offre'));
+}
 
     // Affiche le formulaire de candidature
     public function showCandidature(Offre $offre)
@@ -118,10 +124,50 @@ class EtudiantController extends Controller
             'cv_path'    => $cvPath,
             'statut'     => 'en_attente',
         ]);
+        // Notifie l'entreprise
+NotificationHelper::nouvelleCandidature(
+    $offre->user_id,
+    auth()->user()->name,
+    $offre->titre
+);
 
         // Redirige vers le dashboard avec un message de succès
         // with('success', '...') : message flash (affiché une seule fois)
         return redirect()->route('etudiant.dashboard')
                          ->with('success', 'Votre candidature a été envoyée avec succès !');
     }
+  // Toggle favori
+public function toggleFavori(Offre $offre)
+{
+    $user = auth()->user();
+    $favori = \App\Models\Favori::where('user_id', $user->id)
+                                 ->where('offre_id', $offre->id)
+                                 ->first();
+    if ($favori) {
+        $favori->delete();
+        $enFavori = false;
+    } else {
+        \App\Models\Favori::create([
+            'user_id'  => $user->id,
+            'offre_id' => $offre->id,
+        ]);
+        $enFavori = true;
+    }
+
+    return response()->json([
+        'success' => true,
+        'favori'  => $enFavori,
+    ]);
+}
+
+// Liste des favoris
+public function favoris()
+{
+    $offres = auth()->user()->offresFavoris()
+                            ->with('entreprise')
+                            ->latest('favoris.created_at')
+                            ->get();
+
+    return view('etudiant.favoris', compact('offres'));
+}  
 }

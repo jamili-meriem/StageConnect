@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Icône carrée -->
+  <rect x="0" y="5" width="60" height="60" rx="12" fill="url(#grad1)"/>
+
+  <!-- Chapeau diplômé -->
+  <polygon points="30,18 52,28 30,38 8,28" fill="white" opacity="0.95"/>
+  <rect x="24" y="10" width="12" height="10" rx="2" fill="white" opacity="0.95"/>
+  <line x1="52" y1="28" x2="52" y2="42" stroke="white" stroke-width="2"/>
+  <circle cx="52" cy="45" r="3" fill="white" opacity="0.9"/>
+
+  <!-- Buildings -->
+  <rect x="16" y="42" width="8" height="18" rx="1" fill="white" opacity="0.8"/>
+  <rect x="26" y="38" width="8" height="22" rx="1" fill="white" opacity="0.9"/>
+  <rect x="36" y="42" width="8" height="18" rx="1" fill="white" opacity="0.8"/>
+
+  <!-- Texte Stage -->
+  <text x="72" y="48" font-family="Arial,sans-serif" font-size="28"
+        font-weight="700" fill="#1e40af">Stage</text>
+
+  <!-- Texte Connect -->
+  <text x="150" y="48" font-family="Arial,sans-serif" font-size="28"
+        font-weight="300" fill="#3b82f6">Connect</text>
+
+  <!-- Tagline -->
+  <text x="72" y="65" font-family="Arial,sans-serif" font-size="8"
+        font-weight="400" fill="#94a3b8" letter-spacing="1.5">
+    PLATEFORME DE GESTION DE STAGES
+  </text>
+
+  <!-- Ligne décorative -->
+  <rect x="72" y="52" width="248" height="1.5" rx="1" fill="#3b82f6" opacity="0.3"/>
+</svg>

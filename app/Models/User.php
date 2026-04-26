@@ -10,47 +10,41 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // fillable : liste des colonnes qu'on peut remplir en masse
-    // sans ça, Laravel refuse d'insérer les données par sécurité
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',  // on ajoute role ici
+        'name', 'email', 'password', 'role',
+        'phone', 'bio', 'avatar',
+        'secteur', 'taille_entreprise', 'site_web',
+        'adresse', 'ville', 'latitude', 'longitude',
+        'universite', 'filiere', 'niveau',
+        'cv_path', 'linkedin',
     ];
 
-    // hidden : colonnes jamais affichées (ex: dans les réponses JSON)
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
-    // casts : convertit automatiquement les types
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            // password est automatiquement hashé avec bcrypt
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'latitude'          => 'float',
+            'longitude'         => 'float',
         ];
     }
 
-    // ========== MÉTHODES DE RÔLE ==========
+    // ========== RÔLES ==========
 
-    // isEtudiant() : retourne true si l'utilisateur est étudiant
-    // utilisé dans les vues : @if(auth()->user()->isEtudiant())
     public function isEtudiant(): bool
     {
         return $this->role === 'etudiant';
     }
 
-    // isEntreprise() : retourne true si l'utilisateur est une entreprise
     public function isEntreprise(): bool
     {
         return $this->role === 'entreprise';
     }
 
-    // isAdmin() : retourne true si l'utilisateur est admin
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -58,18 +52,65 @@ class User extends Authenticatable
 
     // ========== RELATIONS ==========
 
-    // Une entreprise (user) peut avoir plusieurs offres
-    // hasMany : relation "un à plusieurs"
-    // Un user → plusieurs offres
     public function offres()
     {
         return $this->hasMany(Offre::class);
     }
 
-    // Un étudiant (user) peut avoir plusieurs candidatures
-    // Un user → plusieurs candidatures
     public function candidatures()
     {
         return $this->hasMany(Candidature::class);
+    }
+
+    public function favoris()
+    {
+        return $this->hasMany(Favori::class);
+    }
+
+    public function offresFavoris()
+    {
+        // Relation many-to-many via la table favoris
+        return $this->belongsToMany(Offre::class, 'favoris')
+                    ->withTimestamps();
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(NotificationApp::class);
+    }
+
+    public function evaluationsRecues()
+    {
+        return $this->hasMany(Evaluation::class, 'evalue_id');
+    }
+
+    public function evaluationsDonnees()
+    {
+        return $this->hasMany(Evaluation::class, 'evaluateur_id');
+    }
+
+    // ========== MÉTHODES UTILES ==========
+
+    // Retourne l'URL de l'avatar ou une image par défaut
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+        // Génère un avatar avec les initiales
+        $initiales = strtoupper(substr($this->name, 0, 2));
+        return "https://ui-avatars.com/api/?name={$initiales}&background=1e40af&color=fff&size=128";
+    }
+
+    // Retourne la note moyenne de l'utilisateur
+    public function getNoteMoyenneAttribute(): float
+    {
+        return $this->evaluationsRecues()->avg('note') ?? 0;
+    }
+
+    // Vérifie si l'offre est en favori
+    public function aEnFavori(int $offreId): bool
+    {
+        return $this->favoris()->where('offre_id', $offreId)->exists();
     }
 }

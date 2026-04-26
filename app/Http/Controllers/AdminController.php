@@ -12,39 +12,43 @@ class AdminController extends Controller
     // Dashboard admin
     // Appelé quand on visite GET /admin/dashboard
     public function dashboard()
-    {
-        // Statistiques globales de la plateforme
-        // ::count() : compte tous les enregistrements de la table
-        $totalUsers = User::count();
-        $totalOffres = Offre::count();
-        $totalCandidatures = Candidature::count();
+{
+    $totalUsers        = User::count();
+    $totalOffres       = Offre::count();
+    $totalCandidatures = Candidature::count();
+    $totalEtudiants    = User::where('role', 'etudiant')->count();
+    $totalEntreprises  = User::where('role', 'entreprise')->count();
+    $totalAdmins       = User::where('role', 'admin')->count();
 
-        // Compte les utilisateurs par rôle
-        // where('role', 'etudiant') : filtre par rôle
-        $totalEtudiants = User::where('role', 'etudiant')->count();
-        $totalEntreprises = User::where('role', 'entreprise')->count();
+    $derniersUsers    = User::latest()->take(5)->get();
+    $dernieresOffres  = Offre::with('entreprise')->latest()->take(5)->get();
 
-        // Récupère les 5 derniers utilisateurs inscrits
-        // latest() : trie du plus récent au plus ancien
-        // take(5) : prend seulement les 5 premiers
-        $derniersUsers = User::latest()->take(5)->get();
+    // Candidatures par statut pour le graphique donut
+    $candidaturesParStatut = Candidature::selectRaw('statut, count(*) as total')
+                                         ->groupBy('statut')
+                                         ->pluck('total', 'statut');
 
-        // Récupère les 5 dernières offres publiées
-        $dernieresOffres = Offre::with('entreprise')
-                                ->latest()
-                                ->take(5)
+    // Offres par domaine pour le graphique bar
+    $offresParDomaine = Offre::selectRaw('domaine, count(*) as total')
+                              ->groupBy('domaine')
+                              ->orderByDesc('total')
+                              ->get();
+
+    // Inscriptions des 6 derniers mois pour le graphique line
+    $inscriptionsParMois = User::selectRaw('DATE_FORMAT(created_at, "%b %Y") as mois, count(*) as total')
+                                ->where('created_at', '>=', now()->subMonths(6))
+                                ->groupByRaw('DATE_FORMAT(created_at, "%b %Y")')
+                                ->orderBy('created_at')
                                 ->get();
 
-        return view('admin.dashboard', compact(
-            'totalUsers',
-            'totalOffres',
-            'totalCandidatures',
-            'totalEtudiants',
-            'totalEntreprises',
-            'derniersUsers',
-            'dernieresOffres'
-        ));
-    }
+    return view('admin.dashboard', compact(
+        'totalUsers', 'totalOffres', 'totalCandidatures',
+        'totalEtudiants', 'totalEntreprises', 'totalAdmins',
+        'derniersUsers', 'dernieresOffres',
+        'candidaturesParStatut', 'offresParDomaine',
+        'inscriptionsParMois'
+    ));
+}
 
     // Liste tous les utilisateurs
     // Appelé quand on visite GET /admin/users

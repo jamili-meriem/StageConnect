@@ -24,6 +24,10 @@
            class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition text-sm">
             Voir les offres
         </a>
+        <a href="{{ route('etudiant.profil') }}"
+   style="border:1px solid var(--border-color);color:var(--text-primary);padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;background:var(--bg-card);">
+    Mon profil
+</a>
     </div>
 </div>
 
@@ -108,6 +112,7 @@
                        class="text-indigo-600 hover:underline ml-1">
                         Voir les offres
                     </a>
+            
                     <a href="{{ route('etudiant.recommandations') }}"
    class="border border-blue-600 text-blue-600 px-5 py-2 rounded-lg hover:bg-blue-50 transition text-sm">
     Recommandations IA

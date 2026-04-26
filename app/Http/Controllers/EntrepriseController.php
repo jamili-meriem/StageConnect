@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Offre;
 use App\Models\Candidature;
 use Illuminate\Http\Request;
+use App\Helpers\NotificationHelper;
 
 class EntrepriseController extends Controller
 {
@@ -50,38 +51,50 @@ class EntrepriseController extends Controller
 
     // Sauvegarde la nouvelle offre en base de données
     // Appelé quand on soumet POST /entreprise/offres
-    public function storeOffre(Request $request)
-    {
-        // Validation des données du formulaire
-        $request->validate([
-            'titre'       => 'required|min:5|max:255',
-            'domaine'     => 'required',
-            'lieu'        => 'required',
-            'description' => 'required|min:20',
-            // nullable : le champ peut être vide
-            'duree'       => 'nullable|string',
-            // date : doit être une date valide
-            // after:today : la date doit être dans le futur
-            'date_limite' => 'nullable|date|after:today',
-        ]);
+   public function storeOffre(Request $request)
+{
+    $request->validate([
+        'titre'       => 'required|min:5|max:255',
+        'domaine'     => 'required',
+        'lieu'        => 'required',
+        'description' => 'required|min:20',
+        'duree'       => 'nullable|string',
+        'date_limite' => 'nullable|date|after:today',
+        'salaire_min' => 'nullable|integer|min:0',
+        'salaire_max' => 'nullable|integer|min:0',
+        'type_travail'         => 'nullable|in:presentiel,remote,hybride',
+        'niveau_requis'        => 'nullable|in:bac,bac+2,bac+3,bac+4,bac+5',
+        'nombre_postes'        => 'nullable|integer|min:1',
+        'competences_requises' => 'nullable|string',
+    ]);
 
-        // Crée l'offre en base de données
-        // array_merge : fusionne les données validées avec user_id
-        Offre::create(array_merge(
-            $request->only([
-                'titre', 'domaine', 'lieu',
-                'description', 'duree', 'date_limite'
-            ]),
-            // on ajoute user_id manuellement
-            // car il ne vient pas du formulaire mais de la session
-            ['user_id' => auth()->id()]
-        ));
-
-        return redirect()->route('entreprise.dashboard')
-                         ->with('success', 'Offre publiée avec succès !');
+    // Transforme la string de compétences en tableau JSON
+    // "PHP, Laravel, MySQL" → ["PHP", "Laravel", "MySQL"]
+    $competences = null;
+    if ($request->competences_requises) {
+        $competences = array_map('trim', explode(',', $request->competences_requises));
     }
 
-    // Affiche le formulaire de modification d'une offre
+    Offre::create([
+        'user_id'              => auth()->id(),
+        'titre'                => $request->titre,
+        'domaine'              => $request->domaine,
+        'lieu'                 => $request->lieu,
+        'description'          => $request->description,
+        'duree'                => $request->duree,
+        'date_limite'          => $request->date_limite,
+        'salaire_min'          => $request->salaire_min,
+        'salaire_max'          => $request->salaire_max,
+        'type_travail'         => $request->type_travail ?? 'presentiel',
+        'niveau_requis'        => $request->niveau_requis ?? 'bac+3',
+        'nombre_postes'        => $request->nombre_postes ?? 1,
+        'competences_requises' => $competences,
+        'is_active'            => true,
+    ]);
+
+    return redirect()->route('entreprise.dashboard')
+                     ->with('success', 'Offre publiée avec succès !');
+}    // Affiche le formulaire de modification d'une offre
     // Appelé quand on visite GET /entreprise/offres/{offre}/edit
     public function editOffre(Offre $offre)
     {
@@ -178,19 +191,31 @@ class EntrepriseController extends Controller
     // Change le statut d'une candidature (acceptée / refusée)
     // Appelé quand on soumet PATCH /entreprise/candidatures/{candidature}/statut
     public function updateStatut(Request $request, Candidature $candidature)
-    {
-        if ($candidature->offre->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            // in: : la valeur doit être l'une de ces options
-            'statut' => 'required|in:acceptee,refusee',
-        ]);
-
-        $candidature->update(['statut' => $request->statut]);
-
-        return redirect()->back()
-                         ->with('success', 'Statut mis à jour avec succès !');
+{
+    if ($candidature->offre->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $request->validate([
+        'statut' => 'required|in:acceptee,refusee',
+    ]);
+
+    $candidature->update(['statut' => $request->statut]);
+
+    // Envoie une notification à l'étudiant
+    if ($request->statut === 'acceptee') {
+        NotificationHelper::candidatureAcceptee(
+            $candidature->user_id,
+            $candidature->offre->titre
+        );
+    } else {
+        NotificationHelper::candidatureRefusee(
+            $candidature->user_id,
+            $candidature->offre->titre
+        );
+    }
+
+    return redirect()->back()
+                     ->with('success', 'Statut mis à jour !');
+}
 }

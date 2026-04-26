@@ -24,6 +24,10 @@
            class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition text-sm">
             + Publier une offre
         </a>
+        <a href="{{ route('entreprise.profil') }}"
+   style="border:1px solid var(--border-color);color:var(--text-primary);padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;">
+    Mon profil
+</a>
     </div>
 </div>
 

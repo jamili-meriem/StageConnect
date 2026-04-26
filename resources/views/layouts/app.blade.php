@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }} — Plateforme de stages</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease; }
@@ -16,13 +17,12 @@
     <nav class="nav-blur sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
-            {{-- Logo --}}
-            <a href="/" class="flex items-center gap-3">
-                <div class="w-9 h-9 btn-primary rounded-xl flex items-center justify-center shadow-md">
-                    <span style="color:white;font-weight:700;font-size:16px;">S</span>
-                </div>
-                <span class="text-lg font-bold gradient-text">StageConnect</span>
-            </a>
+           {{-- Nouveau logo SVG --}}
+<a href="/" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="{{ asset('images/logo.svg') }}"
+         alt="StageConnect"
+         style="height:40px;width:auto;">
+</a>
 
             <div class="flex items-center gap-3">
 
@@ -53,7 +53,21 @@
                     <span style="color:var(--text-secondary);font-size:14px;font-weight:500;">
                         {{ auth()->user()->name }}
                     </span>
-
+                    {{-- Badge notifications --}}
+@php
+    $nbNotifs = \App\Models\NotificationApp::where('user_id', auth()->id())
+                                           ->whereNull('lue_at')
+                                           ->count();
+@endphp
+<a href="{{ route('notifications.index') }}"
+   style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">
+    🔔
+    @if($nbNotifs > 0)
+    <span style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        {{ $nbNotifs > 9 ? '9+' : $nbNotifs }}
+    </span>
+    @endif
+</a>
                     <a href="{{ route('dashboard') }}"
                        class="btn-primary"
                        style="padding:8px 16px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;box-shadow:0 2px 8px rgba(59,130,246,0.3);">
@@ -93,11 +107,12 @@
     <footer style="margin-top:80px;border-top:1px solid var(--border-color);background:var(--bg-card);">
         <div class="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-6 h-6 btn-primary rounded-lg flex items-center justify-center">
-                    <span style="color:white;font-weight:700;font-size:11px;">S</span>
-                </div>
-                <span class="font-semibold gradient-text text-sm">StageConnect</span>
-            </div>
+                {{-- Nouveau logo SVG --}}
+<a href="/" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="{{ asset('images/logo.svg') }}"
+         alt="StageConnect"
+         style="height:40px;width:auto;">
+</a>
             <p style="color:var(--text-secondary);font-size:13px;">
                 © {{ date('Y') }} StageConnect — Plateforme de gestion de stages
             </p>

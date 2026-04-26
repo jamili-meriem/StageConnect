@@ -9,53 +9,91 @@ class Offre extends Model
 {
     use HasFactory;
 
-    // Toutes les colonnes qu'on peut remplir en masse
     protected $fillable = [
-        'user_id',
-        'titre',
-        'description',
-        'domaine',
-        'lieu',
-        'duree',
-        'date_limite',
-        'is_active',
+        'user_id', 'titre', 'description', 'domaine',
+        'lieu', 'duree', 'date_limite', 'is_active',
+        'salaire_min', 'salaire_max', 'type_travail',
+        'niveau_requis', 'competences_requises',
+        'nombre_postes', 'vues',
     ];
 
-    // casts : convertit automatiquement les types PHP
     protected $casts = [
-        // date_limite sera un objet Carbon (gestion de dates)
-        // ça permet de faire $offre->date_limite->format('d/m/Y')
-        'date_limite' => 'date',
-
-        // is_active sera un vrai boolean PHP (true/false)
-        // pas juste 0 ou 1 comme en base de données
-        'is_active' => 'boolean',
+        'date_limite'          => 'date',
+        'is_active'            => 'boolean',
+        'competences_requises' => 'array',
+        'salaire_min'          => 'integer',
+        'salaire_max'          => 'integer',
+        'vues'                 => 'integer',
     ];
 
     // ========== RELATIONS ==========
 
-    // Une offre appartient à un user (l'entreprise qui l'a créée)
-    // belongsTo : relation "plusieurs à un"
-    // Plusieurs offres → un seul user
     public function entreprise()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Une offre peut avoir plusieurs candidatures
-    // Un offre → plusieurs candidatures
     public function candidatures()
     {
         return $this->hasMany(Candidature::class);
     }
 
+    public function favoris()
+    {
+        return $this->hasMany(Favori::class);
+    }
+
+    public function etudiantsFavoris()
+    {
+        return $this->belongsToMany(User::class, 'favoris')
+                    ->withTimestamps();
+    }
+
     // ========== SCOPES ==========
 
-    // scopeActive : filtre automatique pour n'avoir que les offres actives
-    // utilisé comme : Offre::active()->get()
-    // au lieu de : Offre::where('is_active', true)->get()
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeParDomaine($query, string $domaine)
+    {
+        return $query->where('domaine', $domaine);
+    }
+
+    public function scopeParVille($query, string $ville)
+    {
+        return $query->where('lieu', 'like', "%{$ville}%");
+    }
+
+    // ========== MÉTHODES UTILES ==========
+
+    // Formate le salaire pour l'affichage
+    public function getSalaireFormatAttribute(): string
+    {
+        if (!$this->salaire_min && !$this->salaire_max) {
+            return 'Non rémunéré';
+        }
+        if ($this->salaire_min && $this->salaire_max) {
+            return number_format($this->salaire_min) . ' - ' .
+                   number_format($this->salaire_max) . ' MAD';
+        }
+        return 'À partir de ' . number_format($this->salaire_min) . ' MAD';
+    }
+
+    // Badge couleur pour le type de travail
+    public function getTypeTravailBadgeAttribute(): array
+    {
+        return match($this->type_travail) {
+            'remote'    => ['label' => 'Remote', 'color' => 'green'],
+            'hybride'   => ['label' => 'Hybride', 'color' => 'amber'],
+            default     => ['label' => 'Présentiel', 'color' => 'blue'],
+        };
+    }
+
+    // Incrémente le compteur de vues
+    public function incrementerVues(): void
+    {
+        $this->increment('vues');
     }
 }
