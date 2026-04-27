@@ -106,14 +106,18 @@
                         Candidature refusée
                     </span>
                 @endif
-                {{-- Bouton évaluation --}}
-@if($candidature->statut === 'acceptee')
+            @if($candidature->statut === 'acceptee')
 <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-top:16px;">
-    <h2 style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:12px;">
-        ⭐ Évaluation du stagiaire
-    </h2>
 
-    {{-- Évaluation existante --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:15px;font-weight:600;color:var(--text-primary);">Évaluation du stagiaire</h2>
+        <a href="{{ route('profil.etudiant.public', $candidature->etudiant->id) }}"
+           style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3b82f6;text-decoration:none;">
+            <x-icon name="user" :size="13" color="#3b82f6"/>
+            Voir le profil public
+        </a>
+    </div>
+
     @php
         $evalExistante = \App\Models\Evaluation::where('candidature_id', $candidature->id)
                                                ->where('evaluateur_id', auth()->id())
@@ -121,27 +125,25 @@
     @endphp
 
     @if($evalExistante)
-    <div style="background:#fffbeb;border-radius:10px;padding:14px;margin-bottom:14px;">
-        <p style="font-size:13px;font-weight:500;color:#92400e;margin-bottom:6px;">
-            Vous avez déjà évalué ce stagiaire :
-        </p>
-        <div style="display:flex;gap:2px;margin-bottom:4px;">
+    <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:14px;margin-bottom:14px;">
+        <p style="font-size:12px;font-weight:600;color:#92400e;margin-bottom:6px;">Votre évaluation :</p>
+        <div style="display:flex;gap:3px;margin-bottom:4px;">
             @for($i = 1; $i <= 5; $i++)
-                <span style="font-size:22px;color:{{ $i <= $evalExistante->note ? '#f59e0b' : '#d1d5db' }};">★</span>
+            <x-icon name="star" :size="18" :color="$i <= $evalExistante->note ? '#f59e0b' : '#d1d5db'" :stroke="1"/>
             @endfor
         </div>
         @if($evalExistante->commentaire)
-        <p style="font-size:12px;color:#78350f;margin-top:6px;">
-            {{ $evalExistante->commentaire }}
-        </p>
+        <p style="font-size:12px;color:#78350f;margin-top:6px;">{{ $evalExistante->commentaire }}</p>
         @endif
     </div>
     @endif
 
     <a href="{{ route('entreprise.candidatures.evaluer', $candidature->id) }}"
-       style="display:inline-flex;align-items:center;gap:8px;background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;">
-        ⭐ {{ $evalExistante ? 'Modifier l\'évaluation' : 'Évaluer ce stagiaire' }}
+       style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#d97706,#f59e0b);color:white;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;">
+        <x-icon name="star" :size="14" color="white" :stroke="2"/>
+        {{ $evalExistante ? 'Modifier l\'évaluation' : 'Évaluer ce stagiaire' }}
     </a>
+
 </div>
 @endif
             </div>

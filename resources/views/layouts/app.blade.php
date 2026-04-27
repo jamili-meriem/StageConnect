@@ -14,89 +14,134 @@
 <body style="background-color: var(--bg-secondary); color: var(--text-primary);">
 
     {{-- Navbar --}}
-    <nav class="nav-blur sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+   <nav class="nav-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6" style="height:64px;display:flex;align-items:center;justify-content:space-between;">
 
-           {{-- Nouveau logo SVG --}}
-<a href="/" style="display:flex;align-items:center;text-decoration:none;">
-    <img src="{{ asset('images/logo.svg') }}"
-         alt="StageConnect"
-         style="height:40px;width:auto;">
-</a>
+        {{-- Logo --}}
+        <a href="/" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
+            <img src="{{ asset('images/logo.svg') }}"
+                 alt="StageConnect"
+                 style="height:36px;width:auto;">
+        </a>
 
-            <div class="flex items-center gap-3">
+        {{-- Navigation droite --}}
+        <div style="display:flex;align-items:center;gap:8px;">
+            @auth
 
-                {{-- Bouton mode sombre --}}
-                <button onclick="toggleTheme()"
-                        id="theme-btn"
-                        style="width:38px;height:38px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.3s ease;"
-                        title="Changer le thème">
-                    🌙
-                </button>
-
-                @auth
-                    {{-- Badge rôle --}}
-                    @if(auth()->user()->isEtudiant())
-                        <span style="background:#eff6ff;color:#1d4ed8;font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;border:1px solid #bfdbfe;">
-                            Étudiant
-                        </span>
-                    @elseif(auth()->user()->isEntreprise())
-                        <span style="background:#eef2ff;color:#4338ca;font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;border:1px solid #c7d2fe;">
-                            Entreprise
-                        </span>
-                    @else
-                        <span style="background:#f1f5f9;color:#475569;font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;border:1px solid #e2e8f0;">
-                            Admin
-                        </span>
-                    @endif
-
-                    <span style="color:var(--text-secondary);font-size:14px;font-weight:500;">
-                        {{ auth()->user()->name }}
+                {{-- Badge rôle --}}
+                @if(auth()->user()->isEtudiant())
+                    <span style="font-size:11px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:6px;letter-spacing:0.3px;">
+                        Étudiant
                     </span>
-                    {{-- Badge notifications --}}
-@php
-    $nbNotifs = \App\Models\NotificationApp::where('user_id', auth()->id())
-                                           ->whereNull('lue_at')
-                                           ->count();
-@endphp
-<a href="{{ route('notifications.index') }}"
-   style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">
-    🔔
+                @elseif(auth()->user()->isEntreprise())
+                    <span style="font-size:11px;font-weight:600;color:#6d28d9;background:#f5f3ff;border:1px solid #ddd6fe;padding:4px 10px;border-radius:6px;letter-spacing:0.3px;">
+                        Entreprise
+                    </span>
+                @else
+                    <span style="font-size:11px;font-weight:600;color:#374151;background:#f9fafb;border:1px solid #e5e7eb;padding:4px 10px;border-radius:6px;letter-spacing:0.3px;">
+                        Admin
+                    </span>
+                @endif
+
+                {{-- Nom utilisateur --}}
+                <span style="font-size:13px;font-weight:500;color:var(--text-primary);padding:0 4px;">
+                    {{ auth()->user()->name }}
+                </span>
+
+                {{-- Notifications --}}
+                @php
+                    $nbNotifs = \App\Models\NotificationApp::where('user_id', auth()->id())
+                                                           ->whereNull('lue_at')
+                                                           ->count();
+                @endphp
+               <a href="{{ route('notifications.index') }}"
+   style="position:relative;width:36px;height:36px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 0.2s;"
+   onmouseover="this.style.borderColor='#3b82f6'"
+   onmouseout="this.style.borderColor='var(--border-color)'"
+   onclick="setTimeout(() => document.getElementById('notif-badge')?.remove(), 100)">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary)">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
     @if($nbNotifs > 0)
-    <span style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+    <span id="notif-badge"
+          style="position:absolute;top:-5px;right:-5px;background:#ef4444;color:white;font-size:10px;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">
         {{ $nbNotifs > 9 ? '9+' : $nbNotifs }}
     </span>
     @endif
 </a>
-                    <a href="{{ route('dashboard') }}"
-                       class="btn-primary"
-                       style="padding:8px 16px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;box-shadow:0 2px 8px rgba(59,130,246,0.3);">
-                        Dashboard
-                    </a>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button style="color:#94a3b8;font-size:13px;background:none;border:none;cursor:pointer;font-weight:500;"
-                                onmouseover="this.style.color='#ef4444'"
-                                onmouseout="this.style.color='#94a3b8'">
-                            Déconnexion
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}"
-                       style="color:var(--text-secondary);font-size:14px;font-weight:500;text-decoration:none;">
-                        Connexion
-                    </a>
-                    <a href="{{ route('register') }}"
-                       class="btn-primary"
-                       style="padding:8px 18px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;">
-                        S'inscrire
-                    </a>
-                @endauth
-            </div>
+                {{-- Bouton mode sombre --}}
+                <button onclick="toggleTheme()"
+                        id="theme-btn"
+                        style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;"
+                        onmouseover="this.style.borderColor='#3b82f6'"
+                        onmouseout="this.style.borderColor='var(--border-color)'">
+                    <svg id="icon-dark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary)">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg id="icon-light" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary);display:none;">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
 
+                {{-- Dashboard --}}
+                <a href="{{ route('dashboard') }}"
+                   style="height:36px;padding:0 16px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;box-shadow:0 2px 8px rgba(59,130,246,0.3);transition:all 0.2s;"
+                   onmouseover="this.style.opacity='0.9'"
+                   onmouseout="this.style.opacity='1'">
+                    Dashboard
+                </a>
+
+                {{-- Déconnexion --}}
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit"
+                            style="height:36px;padding:0 12px;background:none;border:1px solid var(--border-color);color:var(--text-secondary);border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.2s;"
+                            onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'"
+                            onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)'">
+                        Déconnexion
+                    </button>
+                </form>
+
+            @else
+                {{-- Bouton mode sombre --}}
+                <button onclick="toggleTheme()"
+                        id="theme-btn"
+                        style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                    <svg id="icon-dark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary)">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg id="icon-light" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary);display:none;">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                    </svg>
+                </button>
+
+                <a href="{{ route('login') }}"
+                   style="height:36px;padding:0 14px;color:var(--text-primary);font-size:13px;font-weight:500;text-decoration:none;display:flex;align-items:center;border-radius:8px;transition:all 0.2s;"
+                   onmouseover="this.style.color='#3b82f6'"
+                   onmouseout="this.style.color='var(--text-primary)'">
+                    Connexion
+                </a>
+
+                <a href="{{ route('register') }}"
+                   style="height:36px;padding:0 16px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;box-shadow:0 2px 8px rgba(59,130,246,0.3);">
+                    S'inscrire
+                </a>
+            @endauth
         </div>
-    </nav>
+    </div>
+</nav>
 
     {{-- Contenu principal --}}
     <main class="max-w-7xl mx-auto px-6 py-10">
@@ -165,11 +210,11 @@
         </div>
 
         <button onclick="toggleChat()"
-                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1e40af,#3b82f6);border:none;cursor:pointer;box-shadow:0 8px 24px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;margin-left:auto;transition:transform 0.2s ease;"
-                onmouseover="this.style.transform='scale(1.1)'"
-                onmouseout="this.style.transform='scale(1)'">
-            <span style="font-size:24px;">🤖</span>
-        </button>
+        style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1e40af,#3b82f6);border:none;cursor:pointer;box-shadow:0 8px 24px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;margin-left:auto;transition:transform 0.2s ease;"
+        onmouseover="this.style.transform='scale(1.1)'"
+        onmouseout="this.style.transform='scale(1)'">
+    <x-icon name="robot" :size="26" color="white"/>
+</button>
 
     </div>
 
@@ -244,33 +289,31 @@
 
     {{-- Script mode sombre --}}
     <script>
-    // Applique le thème sauvegardé au chargement
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeBtn(savedTheme);
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeIcons(savedTheme);
 
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next    = current === 'light' ? 'dark' : 'light';
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateThemeIcons(next);
+}
 
-        // Change le thème
-        document.documentElement.setAttribute('data-theme', next);
-
-        // Sauvegarde dans localStorage pour persister entre les pages
-        localStorage.setItem('theme', next);
-
-        updateThemeBtn(next);
+function updateThemeIcons(theme) {
+    const iconDark  = document.getElementById('icon-dark');
+    const iconLight = document.getElementById('icon-light');
+    if (!iconDark || !iconLight) return;
+    if (theme === 'dark') {
+        iconDark.style.display  = 'none';
+        iconLight.style.display = 'block';
+    } else {
+        iconDark.style.display  = 'block';
+        iconLight.style.display = 'none';
     }
-
-    function updateThemeBtn(theme) {
-        const btn = document.getElementById('theme-btn');
-        if (btn) {
-            // Change l'icône selon le thème
-            btn.textContent = theme === 'dark' ? '☀️' : '🌙';
-            btn.title = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
-        }
-    }
-    </script>
+}
+</script>
 
 </body>
 </html>

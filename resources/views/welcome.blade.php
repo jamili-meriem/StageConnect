@@ -158,9 +158,10 @@
 
         <div class="card-3d animate-fade-left"
              style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;">
-            <div style="width:56px;height:56px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:26px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
-                🎓
-            </div>
+            {{-- Icône étudiant --}}
+<div style="width:56px;height:56px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
+    <x-icon name="graduation" :size="26" color="white"/>
+</div>
             <h3 style="font-size:17px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">
                 Pour les étudiants
             </h3>
@@ -178,9 +179,10 @@
 
         <div class="card-3d animate-fade-up delay-1"
              style="background:linear-gradient(135deg,#1e40af,#2563eb);border-radius:20px;padding:32px;transform:scale(1.03);">
-            <div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:26px;">
-                🤖
-            </div>
+            {{-- Icône IA --}}
+<div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+    <x-icon name="robot" :size="26" color="white"/>
+</div>
             <h3 style="font-size:17px;font-weight:600;color:white;margin-bottom:10px;">
                 IA intégrée
             </h3>
@@ -201,9 +203,10 @@
 
         <div class="card-3d animate-fade-right"
              style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;">
-            <div style="width:56px;height:56px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:26px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
-                🏢
-            </div>
+           {{-- Icône entreprise --}}
+<div style="width:56px;height:56px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
+    <x-icon name="building" :size="26" color="white"/>
+</div>
             <h3 style="font-size:17px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">
                 Pour les entreprises
             </h3>
@@ -229,14 +232,14 @@
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         @foreach([
-            ['1', 'Créez votre compte', 'Inscrivez-vous en 2 minutes en tant qu\'étudiant ou entreprise', '👤'],
-            ['2', 'Complétez votre profil', 'Ajoutez vos informations, CV et compétences', '📝'],
-            ['3', 'Trouvez ou publiez', 'Parcourez les offres ou publiez vos stages', '🔍'],
-            ['4', 'Postulez avec l\'IA', 'Générez votre lettre et postulez en 1 clic', '🚀'],
+            ['1', 'Créez votre compte', 'Inscrivez-vous en 2 minutes en tant qu\'étudiant ou entreprise', 'user'],
+            ['2', 'Complétez votre profil', 'Ajoutez vos informations, CV et compétences', 'edit'],
+            ['3', 'Trouvez ou publiez', 'Parcourez les offres ou publiez vos stages', 'search'],
+            ['4', 'Postulez avec l\'IA', 'Générez votre lettre et postulez en 1 clic', 'send'],
         ] as $step)
         <div style="text-align:center;position:relative;">
-            <div style="width:64px;height:64px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
-                {{ $step[3] }}
+            <div style="width:64px;height:64px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 20px rgba(59,130,246,0.3);">
+                <x-icon name="{{ $step[3] }}" :size="28" color="white"/>
             </div>
             <div style="position:absolute;top:30px;left:65%;width:35%;height:2px;background:linear-gradient(90deg,#3b82f6,transparent);display:{{ $loop->last ? 'none' : 'block' }};"></div>
             <p style="font-size:11px;font-weight:700;color:#3b82f6;margin-bottom:6px;letter-spacing:1px;">ÉTAPE {{ $step[0] }}</p>
@@ -251,7 +254,7 @@
 <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:24px;padding:60px 40px;text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:white;opacity:0.04;"></div>
     <h2 style="font-size:30px;font-weight:700;color:white;margin-bottom:12px;">
-        Prêt à trouver votre stage ? 🎓
+        Prêt à trouver votre stage ? 
     </h2>
     <p style="color:rgba(255,255,255,0.8);font-size:15px;margin-bottom:32px;">
         Rejoignez des milliers d'étudiants qui ont trouvé leur stage grâce à StageConnect

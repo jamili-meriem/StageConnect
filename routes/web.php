@@ -15,6 +15,11 @@ use App\Http\Controllers\ProfilController;
 Route::get('/', function () {
     return view('welcome');
 });
+// Profils publics — accessibles sans connexion
+Route::get('/profil/entreprise/{user}', [ProfilController::class, 'publicEntreprise'])
+     ->name('profil.entreprise.public');
+Route::get('/profil/etudiant/{user}', [ProfilController::class, 'publicEtudiant'])
+     ->name('profil.etudiant.public');
 
 // ========== ROUTES ÉTUDIANT ==========
 

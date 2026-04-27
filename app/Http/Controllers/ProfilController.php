@@ -4,9 +4,45 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+
 
 class ProfilController extends Controller
 {
+
+// Profil public entreprise
+public function publicEntreprise(User $user)
+{
+    if (!$user->isEntreprise()) abort(404);
+
+    $offres = \App\Models\Offre::where('user_id', $user->id)
+                                ->active()
+                                ->latest()
+                                ->get();
+
+    $evaluations = \App\Models\Evaluation::where('evalue_id', $user->id)
+                                          ->with('evaluateur')
+                                          ->latest()
+                                          ->get();
+
+    return view('profils.entreprise', compact('user', 'offres', 'evaluations'));
+}
+
+// Profil public étudiant
+public function publicEtudiant(User $user)
+{
+    if (!$user->isEtudiant()) abort(404);
+
+    // Charge les candidatures avec leurs statuts
+    $user->load('candidatures');
+
+    $evaluations = \App\Models\Evaluation::where('evalue_id', $user->id)
+                                          ->with('evaluateur')
+                                          ->latest()
+                                          ->get();
+
+    return view('profils.etudiant', compact('user', 'evaluations'));
+}
     // ========== ÉTUDIANT ==========
 
     public function showEtudiant()

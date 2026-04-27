@@ -7,15 +7,20 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function index()
-    {
-        $notifications = NotificationApp::where('user_id', auth()->id())
-                                        ->latest()
-                                        ->paginate(20);
+   public function index()
+{
+    // Marque toutes les notifications comme lues
+    // dès que l'utilisateur visite la page
+    \App\Models\NotificationApp::where('user_id', auth()->id())
+                               ->whereNull('lue_at')
+                               ->update(['lue_at' => now()]);
 
-        // Marque les non lues comme vues
-        return view('notifications', compact('notifications'));
-    }
+    $notifications = \App\Models\NotificationApp::where('user_id', auth()->id())
+                                                ->latest()
+                                                ->paginate(20);
+
+    return view('notifications', compact('notifications'));
+}
 
     public function lire(NotificationApp $notification)
     {

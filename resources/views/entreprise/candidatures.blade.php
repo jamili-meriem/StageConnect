@@ -37,6 +37,11 @@
                 <h3 class="font-semibold text-gray-800 text-base">
                     {{ $candidature->etudiant->name }}
                 </h3>
+                <a href="{{ route('profil.etudiant.public', $candidature->etudiant->id) }}"
+   style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#3b82f6;text-decoration:none;margin-top:4px;">
+    <x-icon name="user" :size="11" color="#3b82f6"/>
+    Voir le profil
+</a>
                 <p class="text-sm text-gray-400 mt-1">
                     {{ $candidature->etudiant->email }}
                 </p>

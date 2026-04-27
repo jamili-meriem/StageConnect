@@ -130,6 +130,11 @@
 
             {{-- Carte entreprise --}}
             <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+                <a href="{{ route('profil.entreprise.public', $offre->entreprise->id) }}"
+   style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#3b82f6;text-decoration:none;margin-bottom:14px;font-weight:500;">
+    <x-icon name="building" :size="13" color="#3b82f6"/>
+    Voir le profil complet
+</a>
 
                 <h3 style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:16px;">
                     À propos de l'entreprise
