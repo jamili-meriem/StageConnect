@@ -25,7 +25,7 @@
             + Publier une offre
         </a>
         <a href="{{ route('entreprise.profil') }}"
-   style="border:1px solid var(--border-color);color:var(--text-primary);padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;">
+   style="border:1px solid var(--border-color);color:var(--text-primary);padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:500;background:var(--bg-secondary);">
     Mon profil
 </a>
     </div>
@@ -106,34 +106,28 @@
                 </td>
 
                 <td class="px-6 py-4">
-                    <div class="flex gap-3">
-
-                        <a href="{{ route('entreprise.offres.candidatures', $offre->id) }}"
-                           class="text-indigo-600 hover:underline text-xs">
-                            Candidatures
-                        </a>
-
-                        <a href="{{ route('entreprise.offres.edit', $offre->id) }}"
-                           class="text-amber-600 hover:underline text-xs">
-                            Modifier
-                        </a>
-
-                        {{-- Formulaire DELETE pour supprimer --}}
-                        {{-- @method('DELETE') : simule une requête DELETE --}}
-                        {{-- car les navigateurs ne supportent que GET et POST --}}
-                        <form method="POST"
-                              action="{{ route('entreprise.offres.destroy', $offre->id) }}"
-                              onsubmit="return confirm('Supprimer cette offre ?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="text-red-500 hover:underline text-xs">
-                                Supprimer
-                            </button>
-                        </form>
-
-                    </div>
-                </td>
+    <div style="display:flex;align-items:center;gap:8px;white-space:nowrap;">
+        <a href="{{ route('entreprise.offres.candidatures', $offre->id) }}"
+           style="font-size:12px;color:#3b82f6;text-decoration:none;padding:4px 10px;border:1px solid #bfdbfe;border-radius:6px;background:#eff6ff;font-weight:500;">
+            Candidatures
+        </a>
+        <a href="{{ route('entreprise.offres.edit', $offre->id) }}"
+           style="font-size:12px;color:#d97706;text-decoration:none;padding:4px 10px;border:1px solid #fcd34d;border-radius:6px;background:#fffbeb;font-weight:500;">
+            Modifier
+        </a>
+        <form method="POST"
+              action="{{ route('entreprise.offres.destroy', $offre->id) }}"
+              onsubmit="return confirm('Supprimer cette offre ?')"
+              style="margin:0;">
+            @csrf
+            @method('DELETE')
+            <button type="submit"
+                    style="font-size:12px;color:#ef4444;padding:4px 10px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;font-weight:500;cursor:pointer;">
+                Supprimer
+            </button>
+        </form>
+    </div>
+</td>
 
             </tr>
             @empty
