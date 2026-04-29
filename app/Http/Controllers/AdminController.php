@@ -19,8 +19,8 @@ class AdminController extends Controller
         $totalEntreprises  = User::where('role', 'entreprise')->count();
         $totalAdmins       = User::where('role', 'admin')->count();
 
-        $derniersUsers    = User::latest()->take(5)->get();
-        $dernieresOffres  = Offre::with('entreprise')->latest()->take(5)->get();
+        $derniersUsers   = User::latest()->take(5)->get();
+        $dernieresOffres = Offre::with('entreprise')->latest()->take(5)->get();
 
         // Candidatures par statut pour le graphique donut
         $candidaturesParStatut = Candidature::selectRaw('statut, count(*) as total')
@@ -37,17 +37,19 @@ class AdminController extends Controller
         $isPostgres = config('database.default') === 'pgsql';
 
         if ($isPostgres) {
+            // PostgreSQL : TO_CHAR + MIN(created_at) pour orderBy
             $inscriptionsParMois = User::selectRaw("TO_CHAR(created_at, 'Mon YYYY') as mois, count(*) as total")
                                         ->where('created_at', '>=', now()->subMonths(6))
                                         ->groupByRaw("TO_CHAR(created_at, 'Mon YYYY')")
-                                        ->orderBy('created_at')
+                                        ->orderByRaw("MIN(created_at)")
                                         ->get();
         } else {
-          $inscriptionsParMois = User::selectRaw("TO_CHAR(created_at, 'Mon YYYY') as mois, count(*) as total")
-                            ->where('created_at', '>=', now()->subMonths(6))
-                            ->groupByRaw("TO_CHAR(created_at, 'Mon YYYY')")
-                            ->orderByRaw("MIN(created_at)")
-                            ->get();
+            // MySQL : DATE_FORMAT
+            $inscriptionsParMois = User::selectRaw('DATE_FORMAT(created_at, "%b %Y") as mois, count(*) as total')
+                                        ->where('created_at', '>=', now()->subMonths(6))
+                                        ->groupByRaw('DATE_FORMAT(created_at, "%b %Y")')
+                                        ->orderBy('created_at')
+                                        ->get();
         }
 
         return view('admin.dashboard', compact(
