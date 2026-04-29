@@ -78,6 +78,8 @@ php artisan storage:link
 php artisan serve
 npm run dev
 seed
+
+
 👥 Comptes de test
 Email	Mot de passe	Rôle
 admin@stageconnect.com	password	Admin
