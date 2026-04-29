@@ -43,11 +43,11 @@ class AdminController extends Controller
                                         ->orderBy('created_at')
                                         ->get();
         } else {
-            $inscriptionsParMois = User::selectRaw('DATE_FORMAT(created_at, "%b %Y") as mois, count(*) as total')
-                                        ->where('created_at', '>=', now()->subMonths(6))
-                                        ->groupByRaw('DATE_FORMAT(created_at, "%b %Y")')
-                                        ->orderBy('created_at')
-                                        ->get();
+          $inscriptionsParMois = User::selectRaw("TO_CHAR(created_at, 'Mon YYYY') as mois, count(*) as total")
+                            ->where('created_at', '>=', now()->subMonths(6))
+                            ->groupByRaw("TO_CHAR(created_at, 'Mon YYYY')")
+                            ->orderByRaw("MIN(created_at)")
+                            ->get();
         }
 
         return view('admin.dashboard', compact(
