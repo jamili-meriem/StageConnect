@@ -54,46 +54,50 @@ Plateforme complète de gestion de stages connectant étudiants et entreprises, 
 | Déploiement | Laravel Cloud |
 
 ---
-## 👥 Comptes de test
-Email	Mot de passe	Rôle
-admin@stageconnect.com	password	Admin
-tech@maroc.com	password	Entreprise
-digital@agency.com	password	Entreprise
-startup@hub.com	password	Entreprise
-design@studio.com	password	Entreprise
-meriem@etudiant.com	password	Étudiant
-youssef@etudiant.com	password	Étudiant
-sara@etudiant.com	password	Étudiant
-karim@etudiant.com	password	Étudiant
-fatima@etudiant.com	password	Étudiant
-💡 Utilisez ces comptes pour tester toutes les fonctionnalités.
+### 🔐 Comptes de test
 
-## 📊 Chiffres clés
-40+ routes
+| Email | Mot de passe | Rôle |
+|-------|-------------|------|
+| admin@stageconnect.com | password | Admin |
+| tech@maroc.com | password | Entreprise |
+| digital@agency.com | password | Entreprise |
+| startup@hub.com | password | Entreprise |
+| design@studio.com | password | Entreprise |
+| meriem@etudiant.com | password | Étudiant |
+| youssef@etudiant.com | password | Étudiant |
+| sara@etudiant.com | password | Étudiant |
+| karim@etudiant.com | password | Étudiant |
+| fatima@etudiant.com | password | Étudiant |
 
-12 migrations
+> 💡 **Astuce :** Utilisez ces comptes pour tester toutes les fonctionnalités de la plateforme.
 
-10 modèles Eloquent
 
-10+ vues Blade
+### 📊 Chiffres clés
 
-4 contrôleurs + 1 IA
+- 40+ routes
+- 12 migrations
+- 10 modèles Eloquent
+- 10+ vues Blade
+- 4 contrôleurs métier + 1 IA
 
-##🔒 Sécurité implémentée
-Fonctionnalité	Description
-Middleware de rôles	3 niveaux : étudiant, entreprise, admin
-CSRF Protection	Tokens sur tous les formulaires POST
-Hash bcrypt	Mots de passe jamais stockés en clair
-Rate Limiting	5 tentatives de login/minute maximum
-Validation fichiers	CV : PDF uniquement, max 2 Mo
-Sanitization	Protection XSS sur toutes les entrées
-Authentification	Laravel Breeze avec session sécurisée
-Gates & Policies	Vérification des permissions par rôle
-Stockage sécurisé	Fichiers CV dans storage protégé
-##👩‍💻 Auteur
-Meriem Jamili — Étudiante en Génie Informatique
 
-https://img.shields.io/badge/GitHub-jamili--meriem-black?style=flat&logo=github
+### 🔒 Sécurité implémentée
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| **Middleware de rôles** | 3 niveaux : étudiant, entreprise, admin |
+| **CSRF Protection** | Tokens sur tous les formulaires POST |
+| **Hash bcrypt** | Mots de passe jamais stockés en clair |
+| **Rate Limiting** | 5 tentatives de login/minute maximum |
+| **Validation fichiers** | CV : PDF uniquement, max 2 Mo |
+| **Sanitization** | Protection XSS sur toutes les entrées |
+
+
+### 👩‍💻 Auteur
+
+**Meriem Jamili** — Étudiante en Génie Informatique
+
+[![GitHub](https://img.shields.io/badge/GitHub-jamili--meriem-black?style=flat&logo=github)](https://github.com/jamili-meriem)
 
 
 ## 🚀 Installation locale
