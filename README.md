@@ -54,20 +54,6 @@ Plateforme complète de gestion de stages connectant étudiants et entreprises, 
 | Déploiement | Laravel Cloud |
 
 ---
-
-## 🚀 Installation locale
-
-```bash
-git clone https://github.com/jamili-meriem/StageConnect.git
-cd StageConnect
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
-php artisan storage:link
-php artisan serve
-npm run dev
 ## 👥 Comptes de test
 Email	Mot de passe	Rôle
 admin@stageconnect.com	password	Admin
@@ -108,5 +94,20 @@ Stockage sécurisé	Fichiers CV dans storage protégé
 Meriem Jamili — Étudiante en Génie Informatique
 
 https://img.shields.io/badge/GitHub-jamili--meriem-black?style=flat&logo=github
+
+
+## 🚀 Installation locale
+
+```bash
+git clone https://github.com/jamili-meriem/StageConnect.git
+cd StageConnect
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+php artisan serve
+npm run dev
 
 
