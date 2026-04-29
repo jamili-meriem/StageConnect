@@ -77,3 +77,49 @@ php artisan storage:link
 # 6. Lancer
 php artisan serve
 npm run dev
+seed
+👥 Comptes de test
+Email	Mot de passe	Rôle
+admin@stageconnect.com	password	Admin
+tech@maroc.com	password	Entreprise
+digital@agency.com	password	Entreprise
+startup@hub.com	password	Entreprise
+design@studio.com	password	Entreprise
+meriem@etudiant.com	password	Étudiant
+youssef@etudiant.com	password	Étudiant
+sara@etudiant.com	password	Étudiant
+karim@etudiant.com	password	Étudiant
+fatima@etudiant.com	password	Étudiant
+💡 Astuce : Utilisez ces comptes pour tester toutes les fonctionnalités de la plateforme.
+
+📊 Chiffres clés
+40+ routes
+
+12 migrations
+
+10 modèles Eloquent
+
+10+ vues Blade
+
+4 contrôleurs métier + 1 IA
+
+🔒 Sécurité
+Middleware de rôles (étudiant/entreprise/admin)
+
+Protection CSRF sur tous les formulaires
+
+Hashage bcrypt des mots de passe
+
+Rate limiting sur login (5 tentatives/minute)
+
+Validation des fichiers (PDF max 2 Mo)
+
+Pages d'erreur 403/404 personnalisées
+
+
+👩‍💻 Auteur
+Meriem Jamili — Étudiante en Génie Informatique
+
+https://img.shields.io/badge/GitHub-jamili--meriem-black?style=flat&logo=github
+
+
